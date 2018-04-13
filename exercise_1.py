@@ -30,26 +30,27 @@ for fname in images:
         # 将角点在图像上显示
         cv2.drawChessboardCorners(img, (w,h), corners, ret)
         cv2.imshow('findCorners',img)
-        cv2.waitKey(100000)
+        cv2.waitKey(100)
 cv2.destroyAllWindows()
 #
 ## 标定
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-############################################
-## 方法 1：undistort
 img2 = cv2.imread('left02.jpg')
 h,  w = img2.shape[:2]
 newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),0,(w,h)) # 自由比例参数
-dst = cv2.undistort(img2, mtx, dist, None, newcameramtx)
+
+############################################
+## 方法 1：undistort
+#dst = cv2.undistort(img2, mtx, dist, None, newcameramtx)
 # 根据前面ROI区域裁剪图片
 #x,y,w,h = roi
 #dst = dst[y:y+h, x:x+w]
-cv2.imwrite('undistort.png',dst)
+#cv2.imwrite('undistort.png',dst)
 ##############################################
 
 ##############################################
- ##方法 2：remap
+ #方法 2：remap
 mapx,mapy = cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,(w,h),5)
 dst = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
 
